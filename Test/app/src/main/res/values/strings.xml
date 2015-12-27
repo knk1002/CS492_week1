@@ -3,4 +3,6 @@
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_json">JsonActivity</string>
+    <string name="test_button">Button Test</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

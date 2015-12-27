@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
                 case 2:
                     //Todo : Free
                     return new TestActivity(mContext);
+                    //break;
             }
             return PlaceholderFragment.newInstance(position + 1);
             //return null;

@@ -22,7 +22,10 @@
             android:name=".JsonActivity"
             android:label="@string/title_activity_json"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".TestActivity" >
+        <activity
+            android:name=".TestActivity"
+            android:label="@string/title_activity_test"
+            android:theme="@style/AppTheme.NoActionBar" >
         </activity>
     </application>
 
