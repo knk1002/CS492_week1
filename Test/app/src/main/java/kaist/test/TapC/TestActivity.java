@@ -36,7 +36,8 @@ public class TestActivity extends Fragment {
     private ListView m_ListView;
     private ArrayAdapter<String> Adapter;
     Document doc;
-    ArrayList<String> temp = new ArrayList<String>();
+    Document doc2;
+    ArrayList<CrawlingData> temp = new ArrayList<CrawlingData>();
 
     public TestActivity(Context context)
     {
@@ -57,8 +58,6 @@ public class TestActivity extends Fragment {
         TestAsyncTask jsoupAsyncTask = new TestAsyncTask();
         jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-
-
         return view;
     }
 
@@ -66,14 +65,57 @@ public class TestActivity extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long l_position) {
-            // parent는 AdapterView의 속성의 모두 사용 할 수 있다.
-            String tv = (String)parent.getAdapter().getItem(position);
+            //String tv = (String)parent.getAdapter().getItem(position);
+            String tv = temp.get(position).getImageLink();
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(tv));
             startActivity(browserIntent);
         }
     };
 
+    private class CrawlingData
+    {
+        String comicLink;
+        String imageLink;
+        String comicName;
 
+        public CrawlingData()
+        {
+            comicLink = "";
+            imageLink = "";
+            comicName = "";
+        }
+
+        public String getComicLink()
+        {
+            return comicLink;
+        }
+
+
+        public void setComicLink(String input)
+        {
+            comicLink = input;
+        }
+
+        public String getImageLink()
+        {
+            return imageLink;
+        }
+
+        public void setImageLink(String input)
+        {
+            imageLink = input;
+        }
+
+        public String getComicName()
+        {
+            return comicName;
+        }
+
+        public void setComicName(String input)
+        {
+            comicName = input;
+        }
+    }
 
     private class TestAsyncTask extends AsyncTask<Void, Void, Void> {
 
@@ -85,16 +127,38 @@ public class TestActivity extends Fragment {
         @Override
         protected Void doInBackground(Void... params) {
             try {
-                doc = Jsoup.connect("http://marumaru.in/").userAgent("Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52").get();
-                Elements items = doc.select("td.ranic");
+                doc = Jsoup.connect("http://marumaru.in/c/1").userAgent("Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; fr) Presto/2.9.168 Version/11.52").get();
+                Elements items = doc.select("div.picbox");
                 for (Element item : items) {
-                    Elements elems = item.getElementsByTag("a");
+                    CrawlingData input  = new CrawlingData();
+                    Elements elems = item.getElementsByClass("sbjx");
+                    Elements elems2 = item.getElementsByClass("crop");
                     for (Element elem : elems)
                     {
-                        String url = elem.attr("href");
-                        temp.add("http://marumaru.in" + url);
+                        Elements href_elems = elem.getElementsByTag("a");
+                        for(Element href_elem : href_elems)
+                        {
+                            String url = href_elem.attr("href");
+                            input.setComicLink("http://marumaru.in" + url);
+                        }
+                        Elements span_elems = elem.getElementsByClass("cat");
+                        for (Element span_elem : span_elems)
+                        {
+                            String name = elems.text();
+                            input.setComicName(name);
+                        }
+                    }
+                    for (Element elem2 : elems2)
+                    {
+                        Elements elems3 = item.getElementsByTag("img");
+                        for (Element elem3 : elems3)
+                        {
+                            String img_url = elem3.attr("src");
+                            input.setImageLink(img_url);
+                        }
                     }
 
+                    temp.add(input);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -105,8 +169,8 @@ public class TestActivity extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            for(String s : temp) {
-                Adapter.add(s);
+            for(CrawlingData s : temp) {
+                Adapter.add(s.getComicName());
             }
         }
     }
