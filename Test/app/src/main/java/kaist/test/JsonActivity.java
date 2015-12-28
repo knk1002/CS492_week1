@@ -55,10 +55,7 @@ public class JsonActivity extends Fragment {
         // ListView에 어댑터 연결
         m_ListView.setAdapter(m_Adapter);
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
-        jsoupAsyncTask.execute();
-
-
-
+        jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         return view;
     }
@@ -89,7 +86,6 @@ public class JsonActivity extends Fragment {
             for(String s : temp) {
                 m_Adapter.add(s);
             }
-
         }
     }
 
