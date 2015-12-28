@@ -1,4 +1,4 @@
-package kaist.test;
+package kaist.test.TapC;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import kaist.test.R;
 
 @SuppressLint("ValidFragment")
 public class TestActivity extends Fragment {
@@ -28,6 +30,12 @@ public class TestActivity extends Fragment {
 
         return view;
     }
+
+    private void Crawling()
+    {
+        
+    }
+
 
 
 }
