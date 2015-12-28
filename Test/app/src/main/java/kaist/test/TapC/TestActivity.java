@@ -31,11 +31,6 @@ public class TestActivity extends Fragment {
         return view;
     }
 
-    private void Crawling()
-    {
-        
-    }
-
 
 
 }
