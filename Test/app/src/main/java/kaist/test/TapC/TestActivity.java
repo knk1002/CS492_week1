@@ -3,6 +3,9 @@ package kaist.test.TapC;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,6 +27,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +39,8 @@ public class TestActivity extends Fragment {
 
     private ListView m_ListView;
     private ArrayAdapter<String> Adapter;
+    private CustomListViewAdapter adapter;
     Document doc;
-    Document doc2;
     ArrayList<CrawlingData> temp = new ArrayList<CrawlingData>();
 
     public TestActivity(Context context)
@@ -49,10 +53,13 @@ public class TestActivity extends Fragment {
     {
         View view = inflater.inflate(R.layout.activity_json, null);
 
+        m_ListView = (ListView) view.findViewById(R.id.listview);
+
+        adapter = new CustomListViewAdapter(getContext(),R.layout.list_xml, temp);
         Adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
 
-        m_ListView = (ListView) view.findViewById(R.id.listview);
-        m_ListView.setAdapter(Adapter);
+
+        m_ListView.setAdapter(adapter);
         m_ListView.setOnItemClickListener(mItemClickListener);
 
         TestAsyncTask jsoupAsyncTask = new TestAsyncTask();
@@ -66,22 +73,22 @@ public class TestActivity extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position,
                                 long l_position) {
             //String tv = (String)parent.getAdapter().getItem(position);
-            String tv = temp.get(position).getImageLink();
+            String tv = temp.get(position).getComicLink();
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(tv));
             startActivity(browserIntent);
         }
     };
 
-    private class CrawlingData
+    public class CrawlingData
     {
         String comicLink;
-        String imageLink;
+        Bitmap image;
         String comicName;
 
         public CrawlingData()
         {
             comicLink = "";
-            imageLink = "";
+            image = null;
             comicName = "";
         }
 
@@ -96,14 +103,14 @@ public class TestActivity extends Fragment {
             comicLink = input;
         }
 
-        public String getImageLink()
+        public Bitmap getImage()
         {
-            return imageLink;
+            return image;
         }
 
-        public void setImageLink(String input)
+        public void setImage(Bitmap input)
         {
-            imageLink = input;
+            image = input;
         }
 
         public String getComicName()
@@ -154,10 +161,18 @@ public class TestActivity extends Fragment {
                         for (Element elem3 : elems3)
                         {
                             String img_url = elem3.attr("src");
-                            input.setImageLink(img_url);
+                            /*Bitmap mIcon11 = null;
+                            try {
+                                BitmapFactory.Options options = new BitmapFactory.Options();
+                                options.inJustDecodeBounds = true;
+                                InputStream in = new java.net.URL(img_url).openStream();
+                                mIcon11 = BitmapFactory.decodeStream(in,null,options);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            input.setImage(mIcon11);*/
                         }
                     }
-
                     temp.add(input);
                 }
             } catch (IOException e) {
