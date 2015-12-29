@@ -23,13 +23,18 @@ import android.widget.ListView;
 
 import junit.framework.Test;
 
+import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +74,7 @@ public class TestActivity extends Fragment {
         m_ListView.setOnItemClickListener(mItemClickListener);
 
         TestAsyncTask jsoupAsyncTask = new TestAsyncTask();
-        jsoupAsyncTask.execute();
+        jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         return view;
     }
@@ -88,13 +93,13 @@ public class TestActivity extends Fragment {
     public class CrawlingData
     {
         String comicLink;
-        String image;
+        Bitmap image;
         String comicName;
 
         public CrawlingData()
         {
             comicLink = "";
-            image = "";
+            image = null;
             comicName = "";
         }
 
@@ -109,12 +114,12 @@ public class TestActivity extends Fragment {
             comicLink = input;
         }
 
-        public String getImage()
+        public Bitmap getImage()
         {
             return image;
         }
 
-        public void setImage(String input)
+        public void setImage(Bitmap input)
         {
             image = input;
         }
@@ -167,7 +172,7 @@ public class TestActivity extends Fragment {
                         for (Element elem3 : elems3)
                         {
                             String img_url = elem3.attr("src");
-                            input.setImage(img_url);
+                            input.setImage(downloadImage(img_url));
                         }
                     }
                     temp.add(input);
@@ -183,6 +188,51 @@ public class TestActivity extends Fragment {
         protected void onPostExecute(Void result) {
             adapter.notifyDataSetChanged();
             m_ListView.requestLayout();
+        }
+
+        private Bitmap downloadImage(String url)
+        {
+            final int MAX_IMAGE_SIZE = 172;
+
+            try {
+                byte[] datas = getImageDataFromUrl( new URL(url) );
+
+                // CHECK IMAGE SIZE BEFORE LOAD
+                int scale = 1;
+                BitmapFactory.Options opts = new BitmapFactory.Options();
+                opts.inJustDecodeBounds = true;
+                BitmapFactory.decodeByteArray(datas, 0, datas.length, opts);
+
+                // IF IMAGE IS BIGGER THAN MAX, DOWN SAMPLING
+                if (opts.outHeight > MAX_IMAGE_SIZE || opts.outWidth > MAX_IMAGE_SIZE) {
+                    scale = (int)Math.pow(2, (int)Math.round(Math.log(MAX_IMAGE_SIZE/(double)Math.max(opts.outHeight, opts.outWidth)) / Math.log(0.5)));
+                }
+                opts.inJustDecodeBounds = false;
+                opts.inSampleSize = scale;
+
+                return BitmapFactory.decodeByteArray(datas, 0, datas.length, opts);
+            } catch (IOException e) {
+                return null;
+            }
+        }
+
+        private byte[] getImageDataFromUrl (URL url) {
+            byte[] datas = {};
+
+            try {
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection.setDoInput(true);
+                connection.connect();
+
+                InputStream input = connection.getInputStream();
+                datas = IOUtils.toByteArray(input);
+
+                input.close();
+                connection.disconnect();
+            } catch (IOException e) {
+            }
+
+            return datas;
         }
     }
 

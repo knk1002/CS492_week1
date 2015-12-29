@@ -2,6 +2,8 @@ package kaist.test;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -11,6 +13,9 @@ import android.view.View;
 import android.support.v4.app.Fragment;
 import android.view.ViewGroup;
 import android.widget.ListView;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.lang.String;
 
 import org.jsoup.Jsoup;
@@ -24,6 +29,8 @@ import android.widget.ArrayAdapter;
 import android.os.AsyncTask;
 
 import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 
@@ -60,7 +67,7 @@ public class JsonActivity extends Fragment {
         m_ListView = (ListView) view.findViewById(R.id.listview);
         m_ListView.setAdapter(m_Adapter);
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
-        jsoupAsyncTask.execute();
+        jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         return view;
     }
@@ -91,6 +98,8 @@ public class JsonActivity extends Fragment {
             for(String s : temp) {
                 m_Adapter.add(s);
             }
+            m_Adapter.notifyDataSetChanged();
+            m_ListView.requestLayout();
         }
     }
 

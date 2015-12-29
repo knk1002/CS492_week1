@@ -17,8 +17,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 import kaist.test.R;
@@ -56,7 +59,7 @@ public class CustomListViewAdapter extends BaseAdapter {
 
         TestActivity.CrawlingData listviewitem = data.get(position);
         ImageView icon = (ImageView)convertView.findViewById(R.id.imageview);
-        /*Uri uri1 = Uri.parse(listviewitem.getImage());*/
+        icon.setImageBitmap(listviewitem.getImage());
         TextView name = (TextView)convertView.findViewById(R.id.textview);
         name.setText(listviewitem.getComicName());
         return convertView;
