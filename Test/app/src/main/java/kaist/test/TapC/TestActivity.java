@@ -21,6 +21,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import junit.framework.Test;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -38,10 +40,15 @@ public class TestActivity extends Fragment {
     Context mContext;
 
     private ListView m_ListView;
-    private ArrayAdapter<String> Adapter;
     private CustomListViewAdapter adapter;
     Document doc;
     ArrayList<CrawlingData> temp = new ArrayList<CrawlingData>();
+
+    public TestActivity()
+    {
+
+    }
+
 
     public TestActivity(Context context)
     {
@@ -56,14 +63,13 @@ public class TestActivity extends Fragment {
         m_ListView = (ListView) view.findViewById(R.id.listview);
 
         adapter = new CustomListViewAdapter(getContext(),R.layout.list_xml, temp);
-        Adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
-
+        adapter.notifyDataSetChanged();
 
         m_ListView.setAdapter(adapter);
         m_ListView.setOnItemClickListener(mItemClickListener);
 
         TestAsyncTask jsoupAsyncTask = new TestAsyncTask();
-        jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        jsoupAsyncTask.execute();
 
         return view;
     }
@@ -82,13 +88,13 @@ public class TestActivity extends Fragment {
     public class CrawlingData
     {
         String comicLink;
-        Bitmap image;
+        String image;
         String comicName;
 
         public CrawlingData()
         {
             comicLink = "";
-            image = null;
+            image = "";
             comicName = "";
         }
 
@@ -103,12 +109,12 @@ public class TestActivity extends Fragment {
             comicLink = input;
         }
 
-        public Bitmap getImage()
+        public String getImage()
         {
             return image;
         }
 
-        public void setImage(Bitmap input)
+        public void setImage(String input)
         {
             image = input;
         }
@@ -161,16 +167,7 @@ public class TestActivity extends Fragment {
                         for (Element elem3 : elems3)
                         {
                             String img_url = elem3.attr("src");
-                            /*Bitmap mIcon11 = null;
-                            try {
-                                BitmapFactory.Options options = new BitmapFactory.Options();
-                                options.inJustDecodeBounds = true;
-                                InputStream in = new java.net.URL(img_url).openStream();
-                                mIcon11 = BitmapFactory.decodeStream(in,null,options);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            input.setImage(mIcon11);*/
+                            input.setImage(img_url);
                         }
                     }
                     temp.add(input);
@@ -184,9 +181,8 @@ public class TestActivity extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            for(CrawlingData s : temp) {
-                Adapter.add(s.getComicName());
-            }
+            adapter.notifyDataSetChanged();
+            m_ListView.requestLayout();
         }
     }
 

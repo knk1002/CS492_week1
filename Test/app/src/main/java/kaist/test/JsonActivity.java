@@ -34,11 +34,21 @@ public class JsonActivity extends Fragment {
     private ListView m_ListView;
     private ArrayAdapter<String> m_Adapter;
     Document doc;
-    ArrayList<String> temp = new ArrayList<String>();
+    ArrayList<String> temp;
+
+    public JsonActivity()
+    {
+
+    }
 
     public JsonActivity(Context context)
     {
-        mContext = context;
+        super();
+        this.mContext = context;
+        this.m_Adapter = null;
+        this.m_ListView = null;
+        this.doc = null;
+        this.temp = new ArrayList<String>();
     }
 
     @Override
@@ -46,16 +56,11 @@ public class JsonActivity extends Fragment {
     {
 
         View view = inflater.inflate(R.layout.activity_json, null);
-        // Android에서 제공하는 string 문자열 하나를 출력 가능한 layout으로 어댑터 생성
         m_Adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1);
-
-        // Xml에서 추가한 ListView 연결
         m_ListView = (ListView) view.findViewById(R.id.listview);
-
-        // ListView에 어댑터 연결
         m_ListView.setAdapter(m_Adapter);
         JsoupAsyncTask jsoupAsyncTask = new JsoupAsyncTask();
-        jsoupAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        jsoupAsyncTask.execute();
 
         return view;
     }

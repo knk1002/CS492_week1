@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.view.menu.MenuView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -28,8 +31,10 @@ public class CustomListViewAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private ArrayList<TestActivity.CrawlingData> data;
     private int layout;
+    private Context m_context;
 
     public CustomListViewAdapter(Context context, int layout, ArrayList<TestActivity.CrawlingData> data){
+        this.m_context = context;
         this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.data = data;
         this.layout = layout;
@@ -51,6 +56,7 @@ public class CustomListViewAdapter extends BaseAdapter {
 
         TestActivity.CrawlingData listviewitem = data.get(position);
         ImageView icon = (ImageView)convertView.findViewById(R.id.imageview);
+        /*Uri uri1 = Uri.parse(listviewitem.getImage());*/
         TextView name = (TextView)convertView.findViewById(R.id.textview);
         name.setText(listviewitem.getComicName());
         return convertView;
