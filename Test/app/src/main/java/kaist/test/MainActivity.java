@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
+import kaist.test.TapB.GalleryActivity;
 import kaist.test.TapC.TestActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
                     return new JsonActivity(mContext);
                 case 1:
                     //Todo : Gallery
-                    break;
+                    return new GalleryActivity(mContext);
                 case 2:
                     //Todo : Free
                     return new TestActivity(mContext);

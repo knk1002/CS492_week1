@@ -5,4 +5,5 @@
     <string name="title_activity_json">JsonActivity</string>
     <string name="test_button">Button Test</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_gallery">GalleryActivity</string>
 </resources>
