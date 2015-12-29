@@ -105,7 +105,7 @@ public class GalleryActivity extends Fragment
 
         private Bitmap downloadImage(String url)
         {
-            final int MAX_IMAGE_SIZE = 172;
+            final int MAX_IMAGE_SIZE = 300;
 
             try {
                 byte[] datas = getImageDataFromUrl( new URL(url) );
