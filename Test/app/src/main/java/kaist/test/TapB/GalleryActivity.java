@@ -44,6 +44,11 @@ public class GalleryActivity extends Fragment
     Document doc;
     ArrayList<Bitmap> temp = new ArrayList<Bitmap>();
 
+    public GalleryActivity()
+    {
+
+    }
+
 
 
     public GalleryActivity(Context context)
@@ -105,7 +110,7 @@ public class GalleryActivity extends Fragment
 
         private Bitmap downloadImage(String url)
         {
-            final int MAX_IMAGE_SIZE = 300;
+            final int MAX_IMAGE_SIZE = 500;
 
             try {
                 byte[] datas = getImageDataFromUrl( new URL(url) );
